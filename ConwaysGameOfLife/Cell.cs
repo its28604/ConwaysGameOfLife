@@ -14,9 +14,24 @@ namespace ConwaysGameOfLife
             IsAlive = false;
         }
 
-        public void Live()
+        public void Lives()
         {
             IsAlive = true;
+        }
+
+        internal bool Underpopulation()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool Overpopulation()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool AbleToReproduction()
+        {
+            throw new NotImplementedException();
         }
     }
 }

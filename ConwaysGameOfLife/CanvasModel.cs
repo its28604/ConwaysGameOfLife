@@ -30,100 +30,34 @@ namespace ConwaysGameOfLife
             if (Cells[i, j].IsAlive)
                 Cells[i, j].Dies();
             else
-                Cells[i, j].Live();
+                Cells[i, j].Lives();
         }
 
         public static void Generate()
         {
             var next_cells = new Cell[Width, Height];
-            for (int i = 0; i < Width; i++)
+            for (int x = 0; x < Width; x++)
             {
-                for (int j = 0; j < Height; j++)
+                for (int y = 0; y < Height; y++)
                 {
-                    var cell = Cells[i, j];
+                    var cell = Cells[x, y];
                     if (cell.IsAlive)
                     {
-                        if (FewerThanTwoLiveNeighbours(i, j))
-                            next_cells[i, j].Dies();
-                        else if (MoreThanThreeLiveNeighbours(i, j))
-                            next_cells[i, j].Dies();
+                        if (cell.Underpopulation() || cell.Overpopulation())
+                            next_cells[x, y].Dies();
                         else
-                            next_cells[i, j].Live();
+                            next_cells[x, y].Lives();
                     }
                     else
                     {
-                        if (ExactlyThreeLiveNeighbours(i, j))
-                            next_cells[i, j].Live();
+                        if (cell.AbleToReproduction())
+                            next_cells[x, y].Lives();
                         else
-                            next_cells[i, j].Dies();
+                            next_cells[x, y].Dies();
                     }
                 }
             }
             Cells = next_cells;
-        }
-
-        private static bool ExactlyThreeLiveNeighbours(int i, int j)
-        {
-            int n = 0;
-            foreach (var cell in GetNeighbours(i, j))
-            {
-                if (cell.IsAlive)
-                    n++;
-            }
-            return n == 3;
-        }
-
-        private static bool FewerThanTwoLiveNeighbours(int i, int j)
-        {
-            int n = 0;
-            foreach (var cell in GetNeighbours(i, j))
-            {
-                if (cell.IsAlive)
-                    n++;
-            }
-            return n < 2;
-        }
-
-        private static IEnumerable<Cell> GetNeighbours(int i, int j)
-        {
-            if (i - 1 >= 0)
-            {
-                yield return Cells[i - 1, j];
-
-                if (j - 1 >= 0)
-                    yield return Cells[i - 1, j - 1];
-
-                if (j + 1 < Height)
-                    yield return Cells[i - 1, j + 1];
-            }
-
-            if (j - 1 >= 0)
-                yield return Cells[i, j - 1];
-
-            if (j + 1 < Height)
-                yield return Cells[i, j + 1];
-
-            if (i + 1 < Width)
-            {
-                yield return Cells[i + 1, j];
-
-                if (j - 1 >= 0)
-                    yield return Cells[i + 1, j - 1];
-
-                if (j + 1 < Height)
-                    yield return Cells[i + 1, j + 1];
-            }
-        }
-
-        private static bool MoreThanThreeLiveNeighbours(int i, int j)
-        {
-            int n = 0;
-            foreach (var cell in GetNeighbours(i, j))
-            {
-                if (cell.IsAlive)
-                    n++;
-            }
-            return n > 3;
         }
     }
 }

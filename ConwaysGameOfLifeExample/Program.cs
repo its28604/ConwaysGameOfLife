@@ -1,35 +1,78 @@
 ﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
 
 int WIDTH = 200;
 int HEIGHT = 200;
 
-Cell[,] grid = new Cell[WIDTH, HEIGHT];
-Cell[,] next = new Cell[WIDTH, HEIGHT];
+Grid grid = new Grid(WIDTH, HEIGHT);
 
-for (int x = 0; x < WIDTH; x++)
+
+Task.Run(() =>
 {
-    for (int y = 0; y < HEIGHT; y++)
+    while (true)
     {
-        Cell cell = grid[x, y];
+        grid.Generation();
+        grid.Print();
+        Task.Delay(1000);
+    }
+});
+Console.ReadLine();
 
-        if (cell.IsAlive)
+class Grid
+{
+    public Grid(int width, int height)
+    {
+        Width = width;
+        Height = height;
+        grid = new Cell[Width, Height];
+    }
+
+    public int Width { get; private set; }
+    public int Height { get; private set; }
+
+    private Cell[,] grid;
+
+    public void Generation()
+    {
+        Cell[,] next = new Cell[Width, Height];
+        for (int x = 0; x < Width; x++)
         {
-            if (cell.Underpopulation() || cell.Overpopulation())
-                next[x, y].Dies();
-            else
-                next[x, y].Lives();
+            for (int y = 0; y < Height; y++)
+            {
+                Cell cell = grid[x, y];
+
+                if (cell.IsAlive)
+                {
+                    if (cell.Underpopulation() || cell.Overpopulation())
+                        next[x, y].Dies();
+                    else
+                        next[x, y].Lives();
+                }
+                else
+                {
+                    if (cell.AbleToReproduction())
+                        next[x, y].Lives();
+                    else
+                        next[x, y].Dies();
+                }
+            }
         }
-        else
+    }
+
+    internal void Print()
+    {
+        for (int x = 0; x < Width; x++)
         {
-            if (cell.AbleToReproduction())
-                next[x, y].Lives();
-            else
-                next[x, y].Dies();
+            for (int y = 0; y < Height; y++)
+            {
+                if (grid[x, y].IsAlive)
+                    Console.Write("■");
+                else
+                    Console.Write("□");
+            }
+            Console.WriteLine();
         }
     }
 }
-
 
 class Cell
 {
@@ -39,16 +82,22 @@ class Cell
 
     internal bool AbleToReproduction()
     {
-        throw new NotImplementedException();
+        Random random = new Random();
+
+        return random.Next(0, 1) == 1 ? true : false;
     }
 
     internal bool Overpopulation()
     {
-        throw new NotImplementedException();
+        Random random = new Random();
+
+        return random.Next(0, 1) == 1 ? true : false;
     }
 
     internal bool Underpopulation()
     {
-        throw new NotImplementedException();
+        Random random = new Random();
+
+        return random.Next(0, 1) == 1 ? true : false;
     }
 }

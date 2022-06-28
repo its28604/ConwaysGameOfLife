@@ -1,103 +1,83 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-int WIDTH = 200;
-int HEIGHT = 200;
+int WIDTH = 50;
+int HEIGHT = 50;
+bool pause = false;
 
-Grid grid = new Grid(WIDTH, HEIGHT);
+ConsoleCanvas canvas = new ConsoleCanvas();
+
+Grid grid = new Grid(WIDTH, HEIGHT, canvas);
 
 
 Task.Run(() =>
 {
     while (true)
     {
-        grid.Generation();
-        grid.Print();
-        Task.Delay(1000);
+        if (!pause)
+        {
+            grid.Generation();
+            grid.Print();
+            Task.Delay(100).Wait();
+        }
     }
 });
-Console.ReadLine();
 
-class Grid
+
+var key = ConsoleKey.A;
+while (key != ConsoleKey.Escape)
 {
-    public Grid(int width, int height)
+    key = Console.ReadKey(true).Key;
+    switch (key)
     {
-        Width = width;
-        Height = height;
-        grid = new Cell[Width, Height];
-    }
-
-    public int Width { get; private set; }
-    public int Height { get; private set; }
-
-    private Cell[,] grid;
-
-    public void Generation()
-    {
-        Cell[,] next = new Cell[Width, Height];
-        for (int x = 0; x < Width; x++)
-        {
-            for (int y = 0; y < Height; y++)
+        case ConsoleKey.P:
+            pause = !pause;
+            break;
+        case ConsoleKey.W:
             {
-                Cell cell = grid[x, y];
-
-                if (cell.IsAlive)
-                {
-                    if (cell.Underpopulation() || cell.Overpopulation())
-                        next[x, y].Dies();
-                    else
-                        next[x, y].Lives();
-                }
-                else
-                {
-                    if (cell.AbleToReproduction())
-                        next[x, y].Lives();
-                    else
-                        next[x, y].Dies();
-                }
+                var pos = Console.GetCursorPosition();
+                Console.SetCursorPosition(
+                    pos.Left,
+                    pos.Top > 0 ? pos.Top - 1 : HEIGHT - 1);
+                break;
             }
-        }
-    }
-
-    internal void Print()
-    {
-        for (int x = 0; x < Width; x++)
-        {
-            for (int y = 0; y < Height; y++)
+        case ConsoleKey.A:
             {
-                if (grid[x, y].IsAlive)
-                    Console.Write("■");
-                else
-                    Console.Write("□");
+                var pos = Console.GetCursorPosition();
+                int x = pos.Left / sizeof(char);
+                int y = pos.Top;
+                Console.SetCursorPosition(
+                    x > 0 ? (x - 1) * sizeof(char) : (WIDTH - 1) * sizeof(char),
+                    pos.Top);
+                break;
             }
-            Console.WriteLine();
-        }
-    }
-}
-
-class Cell
-{
-    public bool IsAlive { get; private set; }
-    public void Dies() => IsAlive = false;
-    public void Lives() => IsAlive = true;
-
-    internal bool AbleToReproduction()
-    {
-        Random random = new Random();
-
-        return random.Next(0, 1) == 1 ? true : false;
-    }
-
-    internal bool Overpopulation()
-    {
-        Random random = new Random();
-
-        return random.Next(0, 1) == 1 ? true : false;
-    }
-
-    internal bool Underpopulation()
-    {
-        Random random = new Random();
-
-        return random.Next(0, 1) == 1 ? true : false;
+        case ConsoleKey.S:
+            {
+                var pos = Console.GetCursorPosition();
+                Console.SetCursorPosition(
+                    pos.Left,
+                    pos.Top < HEIGHT - 1 ? pos.Top + 1 : 0);
+                break;
+            }
+        case ConsoleKey.D:
+            {
+                var pos = Console.GetCursorPosition();
+                int x = pos.Left / sizeof(char);
+                int y = pos.Top;
+                Console.SetCursorPosition(
+                    x < WIDTH - 1 ? (x + 1) * sizeof(char) : 0,
+                    pos.Top);
+                break;
+            }
+        case ConsoleKey.Spacebar:
+            {
+                canvas.Console_CancelKeyPress();
+                var pos = Console.GetCursorPosition();
+                int x = pos.Left / sizeof(char);
+                int y = pos.Top;
+                Console.SetCursorPosition(
+                    x > 0 ? (x - 1) * sizeof(char) : (WIDTH - 1) * sizeof(char),
+                    pos.Top);
+                break;
+            }
     }
 }

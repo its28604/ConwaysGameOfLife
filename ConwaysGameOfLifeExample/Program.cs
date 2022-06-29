@@ -1,13 +1,14 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-int WIDTH = 50;
-int HEIGHT = 50;
+using GameModel;
+
+const int WIDTH = 50;
+const int HEIGHT = 50;
+
 bool pause = false;
 
 ConsoleCanvas canvas = new ConsoleCanvas();
-
 Grid grid = new Grid(WIDTH, HEIGHT, canvas);
-
 
 Task.Run(() =>
 {
@@ -21,7 +22,6 @@ Task.Run(() =>
         }
     }
 });
-
 
 var key = ConsoleKey.A;
 while (key != ConsoleKey.Escape)

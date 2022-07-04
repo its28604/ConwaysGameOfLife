@@ -16,4 +16,4 @@ Task.Run(() =>
     }
 });
 
-Console.ReadKey();
+while (Console.ReadKey().Key != ConsoleKey.Escape) ;

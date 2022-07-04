@@ -44,7 +44,7 @@
         {
             return NeighboursAlive == 3;
         }
-        public void ConnectWithNeighbours(Grid parent, int x, int y)
+        public void AssignNeibours(Grid parent, int x, int y)
         {
             neighbours[LT] = parent[x - 1, y - 1];
             neighbours[LM] = parent[x - 1, y];

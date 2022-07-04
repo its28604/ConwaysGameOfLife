@@ -16,8 +16,8 @@ Task.Run(() =>
     {
         if (!pause)
         {
-            grid.Generation();
-            grid.Print();
+            grid.Process();
+            grid.Generate();
             Task.Delay(100).Wait();
         }
     }

@@ -33,7 +33,7 @@
                 return grid[pos_x, pos_y];
             }
         }
-        public void Generation()
+        public void Process()
         {
             for (int x = 0; x < Width; x++)
             {
@@ -59,7 +59,7 @@
             }
         }
 
-        public void Print()
+        public void Generate()
         {
             for (int x = 0; x < Width; x++)
             {
@@ -108,7 +108,7 @@
 
             for (int x = 0; x < Width; x++)
                 for (int y = 0; y < Height; y++)
-                    grid[x, y].ConnectWithNeighbours(this, x, y);
+                    grid[x, y].AssignNeibours(this, x, y);
         }
 
         private void Canvas_StateChanged(object? sender, StateChangedEventArgs args)
@@ -118,7 +118,7 @@
                 cell.Dies();
             else
                 cell.Lives();
-            Print();
+            Generate();
         }
     }
 }
